@@ -80,7 +80,7 @@ def captcha():
 			pass
 		if str(usage) is 'm':
 			try:
-				value = r.recognize_bing(audio, key = "[KEY]")	#NOTICES : https://www.microsoft.com/cognitive-services/en-US/subscriptions
+				value = r.recognize_bing(audio, key = "e1410a49826746abaed916e16ebe2e2d")	#NOTICES : https://www.microsoft.com/cognitive-services/en-US/subscriptions
 				if str is bytes: 
 					result = u"{}".format(value).encode("utf-8")	
 				else: 
