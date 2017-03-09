@@ -27,7 +27,7 @@ def captcha():
 	audio.export(audiowav, format="wav")	
 	sound = AudioSegment.from_wav(audiowav)		#NOTICES : SPLIT AUDIO
 	chunks = split_on_silence(sound, min_silence_len=250, silence_thresh=-30, keep_silence=500)
-	model = ['w','h','h','h','h','h']
+	model = ['w','w','h','h','h','h']
 	usage = (random.choice(model))
 	r = sr.Recognizer()	
 	#DISABLE	with sr.Microphone() as source:	#NOTICES : USE THE DEFAULT MICROPHONE AS THE AUDIO SOURCE, LISTEN FOR 1 SECOND TO CALIBRATE THE ENERGY THRESHOLD FOR AMBIENT NOISE LEVELS	
@@ -40,18 +40,19 @@ def captcha():
 		    chunk.export(out_file, format="wav")
 		audio = r.record(source)		
 		try:
-			#DISABLE	value = r.recognize_sphinx(audio)
 			value = r.recognize_google(audio, language = "en-in")
 			check = value.replace("'", " ")
-			kword = ['your computer or network', 'Error'] #	'your computer or network', 'Error'
+			kword = ['your computer or network', 'Error']
 		except sr.RequestError as e:
 			print("Could not request from Speech Recognition service; {0}".format(e))
 			value = ('Error : ' + str(e))		
 		except sr.UnknownValueError as e:
 			print("Speech Recognition Unknown Value Error")
 			value = ('Error : ' + str(e))
-		if not any(word in check for word in kword):
-			print("Submited")	
+		if any(word in check for word in kword):
+			print("Rejected")	
+			return value			
+		else:
 			if str(usage) is 'g':
 				try:
 					value = r.recognize_google(audio, language = "en-in")	#NOTICES : TO USE ANOTHER API KEY, USE `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
@@ -64,8 +65,6 @@ def captcha():
 					with open("audio.his","a") as f:
 						f.write("\nGoogle Speech Recognition :" + (result))
 					print("Google Speech Recognition : " + (value))
-					print("Completed")	
-					return value
 				except sr.RequestError as e:
 					print("Could not request from Google Speech Recognition service; {0}".format(e))
 					value = ('Error : ' + str(e))		
@@ -86,8 +85,6 @@ def captcha():
 					with open("audio.his","a") as f:
 						f.write("\nWIT.AI : " + (result))
 					print("WIT.AI : " + (value))
-					print("Completed")	
-					return value
 				except sr.RequestError as e:
 					print("Could not request from WIT.AI service; {0}".format(e))
 					value = ('Error : ' + str(e))		
@@ -108,8 +105,6 @@ def captcha():
 					with open("audio.his","a") as f:
 						f.write("\nMicrosoft Bring Speech : " + (result))
 					print("Microsoft Bring Speech : " + (value))
-					print("Completed")	
-					return value
 				except sr.RequestError as e:
 					print("Could not request from Microsoft Bring Speech service; {0}".format(e))
 					value = ('Error : ' + str(e))		
@@ -151,8 +146,6 @@ def captcha():
 					with open("audio.his","a") as f:
 						f.write("\nHoundify : " + (result))					
 					print("Houndify : " + (value))
-					print("Completed")	
-					return value
 				except sr.RequestError as e:
 					print("Could not request from Houndify service; {0}".format(e))
 					value = ('Error : ' + str(e))		
@@ -161,9 +154,6 @@ def captcha():
 					value = ('Error : ' + str(e))
 			else:
 				pass
-		else:		
-			print("Rejected : " + str(value))
-			return value
 if __name__ == "__main__":
 	#DISABLE	os.system("start \"\" http://127.0.0.1:5000/captcha?url=Welcome")
 	app.run(host="192.168.126.1", port=5000, threaded=True)
